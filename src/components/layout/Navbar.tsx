@@ -22,8 +22,12 @@ export function Navbar() {
           transition={{ duration: 0.3 }}
           className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between backdrop-blur-md bg-background/70 border-b border-white/5"
         >
-          <a href="#" className="font-heading font-bold text-xl text-accent-light">
-            {'<Dev />'}
+          <a href="#" className="flex items-center">
+            <img
+              src="/logo-entreprise.png"
+              alt="Logo"
+              className="h-9 w-auto object-contain"
+            />
           </a>
           <ul className="hidden md:flex items-center gap-6">
             {links.map((link) => (
