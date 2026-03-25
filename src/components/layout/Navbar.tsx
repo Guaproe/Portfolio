@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useScrollDirection } from '../../hooks/useScrollDirection'
+import logoUrl from '../../assets/logo-entreprise.png'
 
 const links = [
   { label: 'À propos', href: '#about' },
@@ -24,7 +25,7 @@ export function Navbar() {
         >
           <a href="#" className="flex items-center">
             <img
-              src="/logo-entreprise.png"
+              src={logoUrl}
               alt="Logo"
               className="h-9 w-auto object-contain"
             />
