@@ -5,6 +5,9 @@ import Particles, { initParticlesEngine } from '@tsparticles/react'
 import { loadSlim } from '@tsparticles/slim'
 import { Button } from '../ui/Button'
 
+// Singleton: engine init runs once per app lifetime
+let engineInitPromise: Promise<void> | null = null
+
 export function Hero() {
   const ref = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
@@ -12,9 +15,12 @@ export function Hero() {
   const [particlesReady, setParticlesReady] = useState(false)
 
   useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine)
-    }).then(() => setParticlesReady(true))
+    if (!engineInitPromise) {
+      engineInitPromise = initParticlesEngine(async (engine) => {
+        await loadSlim(engine)
+      })
+    }
+    engineInitPromise.then(() => setParticlesReady(true))
   }, [])
 
   const scrollTo = (id: string) => {
