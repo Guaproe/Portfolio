@@ -18,7 +18,7 @@ Portfolio single-page pour un développeur freelance. Vitrine créative, origina
 | React 18 + Vite + TypeScript | SPA, bundler rapide |
 | Tailwind CSS | Styling utilitaire |
 | Framer Motion | Animations scroll-triggered, transitions |
-| tsParticles | Canvas particules en background Hero |
+| @tsparticles/slim + @tsparticles/react | Canvas particules en background Hero (version slim pour perf) |
 | EmailJS | Envoi email depuis le formulaire de contact (pas de backend) |
 | Vercel | Déploiement (branche main → prod) |
 
@@ -54,10 +54,12 @@ src/
 │   ├── useScrollAnimation.ts   # Hook Framer Motion scroll-triggered
 │   └── useCursor.ts            # Hook position/état du cursor custom
 └── lib/
-    └── emailjs.ts              # Config EmailJS (serviceId, templateId)
+    └── emailjs.ts              # Exporte sendEmail(data: ContactFormData): Promise<void>
 ```
 
 **Pas de CMS, pas de backend.** Tout le contenu est défini dans les fichiers `data/`. Modification du contenu = édition d'un fichier TypeScript.
+
+**Responsive :** mobile-first, breakpoint principal `md` (768px). Les grilles 2 colonnes passent en 1 colonne sous 768px.
 
 ---
 
@@ -88,19 +90,19 @@ src/
 ### 1. Navbar
 - Fixe en haut, `backdrop-blur`, fond semi-transparent
 - Logo/initiales à gauche, liens anchor à droite (About, Stack, Projects, Services, Contact)
-- Masquée au scroll vers le bas, réapparaît au scroll vers le haut (via `useScrollDirection`)
+- Masquée au scroll vers le bas après **50px de défilement**, réapparaît immédiatement au scroll vers le haut (via `useScrollDirection`)
 
 ### 2. Hero
-- Canvas tsParticles en background (particules connectées, mouvement lent, subtil)
-- Parallax léger : le background se déplace plus lentement que le contenu au scroll
-- Effet typing animé sur le titre/rôle (ex : `"Développeur Fullstack"`)
+- Canvas tsParticles (@tsparticles/slim) en background (particules connectées, mouvement lent, subtil)
+- Parallax **basé sur le scroll** : via `useScroll` + `useTransform` de Framer Motion, le background se déplace à `0.3x` de la vitesse de scroll
+- Effet typing animé sur le titre/rôle via `react-type-animation` (ex : `"Développeur Fullstack"`, `"Développeur React"`)
 - Sous-titre court : accroche freelance (1 ligne)
 - Deux CTA : `Voir mes projets` (scroll vers #projects) + `Me contacter` (scroll vers #contact)
 
 ### 3. À propos
-- Layout deux colonnes : photo/avatar à gauche, texte à droite
+- Layout deux colonnes : photo/avatar à gauche, texte à droite. Colonne unique sur mobile (< 768px).
 - Paragraphe de présentation (3-4 lignes)
-- Quelques chiffres clés (années d'expérience, projets livrés, clients satisfaits)
+- 3 chiffres clés hardcodés : années d'expérience, projets livrés, clients satisfaits
 - Animation d'entrée : fade-in + slide-up au scroll
 
 ### 4. Stack technique
@@ -117,12 +119,12 @@ src/
 
 ### 6. Services
 - 3-4 cards : Développement web sur mesure, Intégration UI/UX, API & Backend, Audit & conseil
-- Chaque card : icône, titre, description courte
-- Prix indicatif optionnel
-- Données dans `data/services.ts`
+- Chaque card : icône, titre, description courte, `price?: string` (affiché conditionnellement si défini)
+- Données dans `data/services.ts` — type : `{ icon: string; title: string; description: string; price?: string }[]`
 
 ### 7. Contact
 - Formulaire : Nom, Email, Sujet, Message + bouton Envoyer
+- Champ honeypot caché (`aria-hidden`, `display:none`) pour filtrer les bots avant l'envoi
 - Envoi via EmailJS (serviceId + templateId en variables d'environnement Vite)
 - Feedback visuel : état de chargement sur le bouton, message success/error après envoi
 - Validation basique côté client (champs requis, format email)
@@ -135,10 +137,10 @@ src/
 | Effet | Librairie | Détail |
 |---|---|---|
 | Scroll-triggered fade/slide | Framer Motion | `whileInView` sur chaque section |
-| Effet typing | Framer Motion ou lib custom | Hero — titre/rôle |
-| Parallax Hero | Framer Motion `useScroll` | Background se déplace à 0.3x |
-| Canvas particules | tsParticles | Hero background, particules connectées |
-| Cursor custom | Hook maison | Cercle SVG, scale au hover |
+| Effet typing | react-type-animation | Hero — titre/rôle, liste de termes |
+| Parallax Hero | Framer Motion `useScroll` + `useTransform` | Background se déplace à 0.3x, basé sur scroll |
+| Canvas particules | @tsparticles/slim + @tsparticles/react | Hero background, particules connectées |
+| Cursor custom | Hook maison | Cercle SVG, scale au hover — **non rendu sur touch devices** (`pointer: coarse`) |
 | Stagger badges | Framer Motion | Section Stack |
 | Card glow hover | Tailwind + CSS | Pseudo-élément gradient |
 
