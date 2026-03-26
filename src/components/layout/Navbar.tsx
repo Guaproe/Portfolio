@@ -1,21 +1,21 @@
-import { motion, AnimatePresence } from 'framer-motion'
-import { useScrollDirection } from '../../hooks/useScrollDirection'
-import logoUrl from '../../assets/logo-entreprise.png'
+import { AnimatePresence, motion } from "framer-motion";
+import logoUrl from "../../assets/logo-entreprise.png";
+import { useScrollDirection } from "../../hooks/useScrollDirection";
 
 const links = [
-  { label: 'À propos', href: '#about' },
-  { label: 'Stack', href: '#stack' },
-  { label: 'Projets', href: '#projects' },
-  { label: 'Services', href: '#services' },
-  { label: 'Contact', href: '#contact' },
-]
+  { label: "À propos", href: "#about" },
+  { label: "Stack", href: "#stack" },
+  { label: "Projets", href: "#projects" },
+  { label: "Services", href: "#services" },
+  { label: "Contact", href: "#contact" },
+];
 
 export function Navbar() {
-  const direction = useScrollDirection()
+  const direction = useScrollDirection();
 
   return (
     <AnimatePresence>
-      {direction === 'up' && (
+      {direction === "up" && (
         <motion.nav
           initial={{ y: -80 }}
           animate={{ y: 0 }}
@@ -27,7 +27,7 @@ export function Navbar() {
             <img
               src={logoUrl}
               alt="Logo"
-              className="h-9 w-auto object-contain"
+              className="h-32 w-auto object-contain"
             />
           </a>
           <ul className="hidden md:flex items-center gap-6">
@@ -45,5 +45,5 @@ export function Navbar() {
         </motion.nav>
       )}
     </AnimatePresence>
-  )
+  );
 }
